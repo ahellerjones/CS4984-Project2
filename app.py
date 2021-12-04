@@ -8,6 +8,8 @@ from PyQt5.QtWidgets import QFormLayout
 from PyQt5.QtWidgets import QLineEdit
 from PyQt5.QtWidgets import QVBoxLayout
 from PyQt5.QtWidgets import QHBoxLayout
+from PyQt5.QtWidgets import QPushButton
+
 
 from PyQt5.QtWidgets import QLabel
 
@@ -16,8 +18,10 @@ from PyQt5.QtWidgets import QLabel
 """Dialog-Style application."""
 
 
-class buddies(QWidget):
+class Buddies(QWidget):
         def __init__(self,  lab,  ed, parent=None):
+            super().__init__(parent)
+
             l = QHBoxLayout()
             l.addWidget(lab)
             l.addWidget(ed)
@@ -34,34 +38,45 @@ class EntryScreen(QWidget):
         self.setMinimumSize(400, 600)
         l = QVBoxLayout()
         self.topics = QLineEdit()
-        '''
-        self.srName = QLineEdit(self)
 
-        self.subs = QHBoxLayout(self)
-        self.minSub = QLineEdit(self)
-        self.maxSub = QLineEdit(self)
-        self.actives = QHBoxLayout(self) 
+        self.srName = QLineEdit()  
+        self.userName = QLineEdit()   
+
+        self.minSub = QLineEdit()
+        self.maxSub = QLineEdit()
+
+        self.minActiveUsers = QLineEdit()
+        self.maxActiveUsers = QLineEdit()
 
 
-        self.minActiveUsers = QLineEdit(self)
-        self.maxActiveUsers = QLineEdit(self)
-        self.userName = QLineEdit(self)
-        '''
-        
-        self.setWindowTitle('CS4984 Reddit Investigation Tool')
-        topicsLabel = QLabel('Search terms (seperated by space)')
-        # topicsLabel.setBuddy(self.topics)
-        jim = QWidget()
-        buddies = QHBoxLayout()
-        jim.setLayout(buddies)
-       
-        buddies.addWidget(topicsLabel)
-        
-        
-        buddies.addWidget(self.topics)
-        
-        l.addWidget(jim)
+        topicsBuds = Buddies( QLabel('Search terms (seperated by comma)'), self.topics)
+        srNameBuds = Buddies( QLabel('Specific username query'), self.srName)
+
+
+        minSubBuds = Buddies(QLabel('Min Sub count: '), self.minSub)
+        maxSubBuds = Buddies(QLabel('Max Sub count '), self.maxSub)
+
+
+        subsWidg = Buddies(minSubBuds, maxSubBuds)
+
+        minActiveBuds = Buddies(QLabel('Min active users: '), self.minActiveUsers)
+        maxActiveBuds = Buddies(QLabel('Max active users: '), self.maxActiveUsers)
+
+        activeBuds = Buddies(minActiveBuds, maxActiveBuds)
+   
+        l.addWidget(topicsBuds)
+        l.addWidget(srNameBuds)
+        l.addWidget(subsWidg)
+        l.addWidget(activeBuds)
         self.setLayout(l)
+        self.search = QPushButton('Search')
+        self.cancel = QPushButton('Cancel')
+        l.addWidget(Buddies(self.search, self.cancel))
+
+        self.setWindowTitle('CS4984 Reddit Investigation Tool')
+        
+       
+        
 if __name__ == '__main__':
     app = QApplication(sys.argv)
     dlg = EntryScreen()
