@@ -5,6 +5,9 @@ from PyQt5.QtWidgets import QWidget, QVBoxLayout, QLabel, QHBoxLayout
 
 
 
+'''
+Wrapper for table data 
+'''
 class TableModel(QtCore.QAbstractTableModel):
     def __init__(self, data):
         super(TableModel, self).__init__()
@@ -17,16 +20,10 @@ class TableModel(QtCore.QAbstractTableModel):
             # .column() indexes into the sub-list
             return self._data[index.row()][index.column()]
 
-    def rowCount(self, index):
-        # The length of the outer list.
-        return len(self._data)
 
-    def columnCount(self, index):
-        # The following takes the first sub-list, and returns
-        # the length (only works if all rows are an equal length)
-        return len(self._data[0])
-
-
+''' 
+holds the main window
+'''
 class MainWindow(QWidget):
     def __init__(self):
         super().__init__()
@@ -50,7 +47,7 @@ class MainWindow(QWidget):
 
         leftLayout = QVBoxLayout()
         left.setLayout(leftLayout)
-        leftLayout.addWidget(QLabel('nkjn'))
+        leftLayout.addWidget(QLabel('Found Users: '))
         leftLayout.addWidget(table)
     
         right = QWidget()
