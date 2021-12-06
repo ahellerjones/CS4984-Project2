@@ -18,3 +18,5 @@ This tool has three main modes. The first mode is the search for subreddits base
 This allows for the investigator to see information that isnt noramlly found about a user, such as when the account was created, if it has a verified email, and more.
 The last feeature is an overlap counter of users using multiple subreddits. An example is if I wanted to know who in the VT Corps of Cadets was on Reddit I could choose
 to search for 'VirginiaTech', 'VTCC', and 'ROTC' and it will create a users.txt file of who is uses all of them or just two of them.
+
+Mode 3 is from https://github.com/Watchful1

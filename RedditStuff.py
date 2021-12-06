@@ -6,15 +6,23 @@ from datetime import datetime, timedelta
 import time
 import os
 import json
+'''
+How it should run:
+1. GUI initializes
+2. User chooses modes to run
+3. Appropriate text entry fields appear
+4. When submit is pressed then it will run one mode after the other
+5. Once over it prints out the output it received in the GUI in a neat format
+6. GUI stays open and they can choose new options and run again
+'''
 
+#need to have the user enter this before hand somewhere
+#this data allows for PRAW to work and shouldnt be shared in public
 
 username = input("Enter username: ")
 password = input("Enter password: ")
 clientID = input("Please enter client ID: ")
 clientSecret = input("Please enter client secret: ")
-
-
-mode = input("choose mode, 1 = subreddit search, 2 = user search, 3 = subreddit user overlap finder: ")
 
 reddit = praw.Reddit(
     client_id=clientID,
@@ -24,29 +32,28 @@ reddit = praw.Reddit(
     password=password
 )
 api = PushshiftAPI(reddit)
-
-if mode == '1':
-    search = input("search seperated by ,: ")
-    array = search.split(',')
+'''
+takes in the search parameters and the PRAW reddit object (can take in subreddits seperated by ,)
+Returns an array of subreddits
+'''
+def mode1(search, reddit):
+    userSearch = search
+    array = userSearch.split(',')
     listOfSubs = []
     for searches in array:
         for subredditor in reddit.subreddits.search(searches):
             listOfSubs.append(subredditor)
         stuffFromSubs = []
     for s in listOfSubs:
-        print(s.url)
-    #gen = api.search_comments(author='Plastic_Rock_4768', subreddit=str(listOfSubs[1].title), filter=['selftext'])
-    #print(listOfSubs[1].title)
-    #print(gen)
-    '''
-        stuffFromSubs.append(s.search("Fauci"))
-        for b in i:
-            print(b)
-    '''
+        return s.url
 
-elif mode == '2':
+'''
+takes in the search parameters and the PRAW reddit object
+Returns an array of info on the user. NEED TO KNOW HOW YOU WANT TO FORMAT THIS FOR GUI
+'''
+def mode2(search, reddit):
 
-    userSearch = input("enter username to search: ")
+    userSearch = search
     user = reddit.redditor(userSearch)
     print(user.name)
     print(user.created)
@@ -54,11 +61,15 @@ elif mode == '2':
     print(user.has_verified_email)
     print(user.comment_karma)
 
-elif mode == 3:
-    search = input("search seperated by ,: ")
+'''
+takes in the search parameters (seperated by ,") and how many days back to search (recommended 180)
+Creates and writes to a text file in the current directory
+'''
+def mode3(search, days):
+    print("This mode is from Watchful1")
     subreddits = search.split(',')
     ignored_users = ['[deleted]', 'automoderator']
-    lookback_days = int(input("how many days back do you want to search (recommended 180 days): "))
+    lookback_days = days
     min_comments_per_sub = 1
     file_name = "users.txt"
 
@@ -125,7 +136,7 @@ elif mode == 3:
         while True:
             newUrl = url.format(subreddit) + str(previousEpoch)
             try:
-                response = requests.get(newUrl, headers={'User-Agent': "Overlap counter by /u/Watchful1"})
+                response = requests.get(newUrl, headers={'User-Agent': "Firefox ofc"})
             except requests.exceptions.ReadTimeout:
                 print(
                     f"Pushshift timeout, this usually means pushshift is down. Waiting 5 seconds and trying again: {newUrl}")
@@ -216,5 +227,7 @@ elif mode == 3:
                         txt.write(f"{user}\n")
                 txt.write("\n")
 
-else:
-    print("enter 1 or 2")
+mode = int(input("choose mode, 1 = subreddit search, 2 = user search, 3 = subreddit user overlap finder: "))
+
+if mode == 3:
+    mode3("VMI,VTCC,UVA", 200)
