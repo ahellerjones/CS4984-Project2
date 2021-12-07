@@ -36,8 +36,7 @@ class InputPage(QWidget):
     def search_clicked(self): 
         # Collect relevant data and place it in the class for the controller
         # to use 
-        self.topics = self.topics.text()
-        self.topics.strip()
+        self.topicsString = self.topics.text()
         self.search_s.emit() 
 
     def __init__(self, parent=None):
@@ -72,7 +71,7 @@ class InputPage(QWidget):
 
 
         topicsBuds = Buddies( QLabel('Search terms (seperated by comma)'), self.topics)
-        srNameBuds = Buddies( QLabel('Specific username query'), self.srName)
+        srNameBuds = Buddies( QLabel('Specific username query'), self.userName)
         redditsBuds= Buddies( QLabel('Find overlapping users among these reddits'), self.reddits)
         numDaysBuds = Buddies( QLabel('Number of days back to search: '), self.numberOfDays)
 

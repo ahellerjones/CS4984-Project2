@@ -15,6 +15,7 @@ from PyQt5 import QtCore
 import praw 
 from psaw import PushshiftAPI
 from reddit import mode1, mode2, mode3
+from prawcore.exceptions import ResponseException
 
 
 class Controller(QWidget):
@@ -22,22 +23,27 @@ class Controller(QWidget):
     api = None
 
 
-    '''
+    '''/split
+
         Connected to the init pages login signal
     '''
     @QtCore.pyqtSlot()
     def login_clicked(self):
         data = self.initPage.data
-        if (self.initPage.usernameInput.text == ''):
+        if (self.initPage.usernameInput.text() == ""):
             username="Bright_Row4632"
             password="Alpha257!"
             clientID="rA5jrwcLTVhro2QxnggdFQ"
             clientSecret="4OYyJQOSPcVcnrKlZqbER-jwQ1CsoQ"
-
             self.reddit = praw.Reddit(client_id=clientID, client_secret=clientSecret, 
-            user_agent="Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:47.0) Gecko/20100101 Firefox/47.0",
+            user_agent="Test script by u/Bright_Row4632",
             username=username, password=password
             )
+            print('bnjhbjhbjhb')
+            try:
+                print("Authenticated as {}".format(self.reddit.user.me()))
+            except ResponseException:
+                print("Something went wrong during authentication")
         else:
             self.reddit = praw.Reddit(
             client_id=data[2],
@@ -49,9 +55,9 @@ class Controller(QWidget):
 
         api = PushshiftAPI(self.reddit) # use this to interface 
         # Start an instance of reddit thing from thgisc login
-        self.l.removeWidget(self.initPage)
-        self.initPage.deleteLater()
+        #self.initPage.deleteLater()
 
+        self.initPage.setHidden(True)
         self.resultsPage.setHidden(True)
         self.l.addWidget(self.resultsPage)
         self.l.addWidget(self.inputPage)
@@ -61,21 +67,47 @@ class Controller(QWidget):
     '''
     @QtCore.pyqtSlot()
     def search_clicked(self):
-        search_fields = self.inputPage.topics
+        search_fields = self.inputPage.topicsString
 
         # ==== Mode 1 ====
-        if (self.inputPage.mode1check.isChecked):
+        if (self.inputPage.mode1check.isChecked()):
+            print(search_fields)
             urls, subscribers = mode1(search_fields, self.reddit)
-        #for url, sub in urls, subscribers: 
-                # TODO subscriber filtering 
-        self.resultsPage.leftTable = [urls, subscribers]
+
+            #for url, sub in urls, subscribers: 
+                    # TODO subscriber filtering 
+            #self.resulbtsPage.leftTable = [urls]
+            newTable = []
+            for u in urls: 
+                newTable.append([u])
+            i = 0
+            for u in newTable: 
+                self.resultsPage.leftTable.model.insertRows(i, 1, u)
+                #self.resultsPage.leftTable.model.addColumn([['Jim']])
+                i += 1
+
+            print(urls)
         # ==== Mode 2 ====
-        # if(self.inputPage.mode2check.isChecked): 
+        if(self.inputPage.mode2check.isChecked()): 
+            user = self.inputPage.userName.text()
+            print(user)
+            userInfo = mode2(user, self.reddit)
+            print(userInfo)
+            newTable = []
+            for u in userInfo: 
+                newTable.append([u])
+            print(newTable)
+            i = 0
+            for u in newTable: 
+                self.resultsPage.TRwidget.model.insertRows(i, 1, u)
+                #self.resultsPage.leftTable.model.addColumn([['Jim']])
+                i += 1
 
-
-        if (self.inputPage.mode3check.isChecked):
-            reddits = self.inputPage.reddits.text
-            mode3(reddits, self.inputPage.numberOfDays.text)
+        # ==== Mode 3 ====
+        if (self.inputPage.mode3check.isChecked()):
+            reddits = self.inputPage.reddits.text()
+            print(reddits)
+            mode3(reddits, int(self.inputPage.numberOfDays.text()))
 
 
 
