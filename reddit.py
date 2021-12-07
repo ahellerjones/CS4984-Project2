@@ -28,17 +28,28 @@ def mode1(search, reddit):
 
 '''
 takes in the search parameters and the PRAW reddit object
-Returns an array of info on the user. NEED TO KNOW HOW YOU WANT TO FORMAT THIS FOR GUI
+Returns an array of info on the user.
 '''
 def mode2(search, reddit):
 
     userSearch = search
+    userInfo = []
     user = reddit.redditor(userSearch)
+    '''
     print(user.name)
     print(user.created)
     print(user.id)
     print(user.has_verified_email)
     print(user.comment_karma)
+    '''
+    #returns a list of strings with this order:
+    #username, user created time, user ID, is their email verified, user comment karma
+    userInfo.append(user.name)
+    userInfo.append(str(user.created))
+    userInfo.append(str(user.id))
+    userInfo.append(str(user.has_verified_email))
+    userInfo.append(str(user.comment_karma))
+    return userInfo
 
 '''
 takes in the search parameters (seperated by ,") and how many days back to search (recommended 180)
