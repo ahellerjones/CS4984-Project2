@@ -16,13 +16,14 @@ How it should run:
 6. GUI stays open and they can choose new options and run again
 '''
 
+
 #need to have the user enter this before hand somewhere
 #this data allows for PRAW to work and shouldnt be shared in public
-
 username = input("Enter username: ")
 password = input("Enter password: ")
 clientID = input("Please enter client ID: ")
 clientSecret = input("Please enter client secret: ")
+
 
 reddit = praw.Reddit(
     client_id=clientID,
@@ -34,18 +35,22 @@ reddit = praw.Reddit(
 api = PushshiftAPI(reddit)
 '''
 takes in the search parameters and the PRAW reddit object (can take in subreddits seperated by ,)
-Returns an array of subreddits
+Returns an array of subreddits and a corresponding array of subscriber counts
 '''
 def mode1(search, reddit):
     userSearch = search
     array = userSearch.split(',')
     listOfSubs = []
+    urls = []
+    subscribes = []
     for searches in array:
         for subredditor in reddit.subreddits.search(searches):
             listOfSubs.append(subredditor)
         stuffFromSubs = []
     for s in listOfSubs:
-        return s.url
+        urls.append(s.url)
+        subscribes.append(s.subscribers)
+    return urls, subscribes
 
 '''
 takes in the search parameters and the PRAW reddit object
@@ -229,5 +234,5 @@ def mode3(search, days):
 
 mode = int(input("choose mode, 1 = subreddit search, 2 = user search, 3 = subreddit user overlap finder: "))
 
-if mode == 3:
-    mode3("VMI,VTCC,UVA", 200)
+if mode == 1:
+    mode1("vaccine", reddit)
