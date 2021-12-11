@@ -11,7 +11,7 @@ import json
 takes in the search parameters and the PRAW reddit object (can take in subreddits seperated by ,)
 Returns an array of subreddits and a corresponding array of subscriber counts
 '''
-def mode1(search, reddit):
+def mode1(search, reddit, min, max):
     userSearch = search
     array = search.strip().split(',')
     listOfSubs = []
@@ -24,6 +24,24 @@ def mode1(search, reddit):
     for s in listOfSubs:
         urls.append(s.url)
         subscribes.append(s.subscribers)
+    if min == null & max == null:
+        return urls, subscribes
+    if min != null:
+        count = 0
+        for i in listOfSubs:
+            count = count + 1
+            if i < min:
+                urls.pop(count)
+                listOfSubs.remove(i)
+    if max != null:
+        count = 0
+        for i in listOfSubs:
+            count = count + 1
+            if i > max:
+                urls.pop(count)
+                listOfSubs.remove(i)
+
+
     return urls, subscribes
 
 '''
